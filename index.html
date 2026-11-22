@@ -88,6 +88,13 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 @media(max-width:860px){.hero .wrap{grid-template-columns:minmax(0,1fr)}.phone{width:min(300px,86%);transform:rotate(2deg)}.proj{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){nav .logo{flex-basis:100%}.fig1{padding:10px}.fig1 b{font-size:24px}.fig1 span{font-size:13px}.ent{grid-template-columns:minmax(0,1fr)}.ent .d{margin-bottom:4px}.ent .d small{display:inline;margin-left:8px}.todo{grid-template-columns:minmax(0,1fr)}.strip{grid-template-columns:repeat(2,minmax(0,1fr))}nav a.l{font-size:14px;padding:5px 10px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+.project-layout{display:grid;grid-template-columns:10rem minmax(0,1fr);gap:clamp(16px,3vw,36px)}
+.project-menu{display:flex;flex-direction:column;gap:6px;align-self:start;position:sticky;top:5rem}
+.project-menu a{padding:10px 14px;border-radius:12px;color:var(--ink);text-decoration:none;scroll-margin-top:6rem}
+.project-menu a[aria-current]{background:var(--ink);color:var(--bg)}
+#log{margin-top:2rem;scroll-margin-top:5rem}
+.proj.solo{grid-template-columns:1fr}
+@media(max-width:760px){.project-layout{grid-template-columns:minmax(0,1fr)}.project-menu{position:static;flex-direction:row;flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -219,15 +226,14 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 
 <section class="band" id="projects" style="padding-top:clamp(56px,7vw,90px)"><div class="wrap">
   <h2>프로젝트</h2>
-  <p class="sub">지금 진행 중인 앱이에요. 새 프로젝트가 생기면 여기에 함께 쌓여요.</p>
+  <div class="project-layout"><aside class="project-menu" aria-label="프로젝트 선택"><a id="nyang" href="#nyang">냥냥 놀이터</a><a id="archer" href="#archer">궁수게임</a></aside><div>
   <div id="projList"></div>
-</div></section>
-
-<section class="band" id="log" style="padding-top:0"><div class="wrap">
-  <h2>개발 로그</h2>
+<section id="log">
+  <h2 id="logTitle">개발 로그</h2>
   <p class="sub">최근 작업이 위에 있어요. 태그로 골라 볼 수 있어요.</p>
   <div class="chips" id="chips" role="group" aria-label="태그로 거르기"></div>
   <ol class="log" id="logList"></ol>
+  </section></div></div>
 </div></section>
 
 <section class="band" id="next" style="padding-top:0"><div class="wrap">
@@ -319,9 +325,31 @@ const PROJECTS = [{
   blurb: '고양이 앞에 휴대폰이나 태블릿을 두면 고양이가 화면 속 장난감을 쫓으며 노는 앱이에요. 사람은 장난감을 고르고, 1초 동안 꾹 눌러야만 나올 수 있어서 고양이가 실수로 앱을 나가지 않아요.',
   facts: [['플랫폼', 'Android 폰·태블릿 (minSdk 24, 대상 API 36)'], ['구성', '한 장짜리 HTML 페이지 + Android WebView 래퍼'], ['기술', 'Three.js r169, WebAudio 합성 사운드, WebViewAssetLoader, AdMob + UMP'], ['수익 모델', '무료 + 광고 (홈 화면 배너만)']],
   toys: [['laser', '레이저', '벽 위를 도망다니는 빨간 점'], ['koi', '잉어 연못', '살랑살랑 헤엄치는 잉어'], ['foxtail', '강아지풀', '탄력 있게 흔들리는 풀'], ['dandelion', '민들레', '후 불면 날아가는 꽃씨'], ['fireworks', '불꽃놀이', '탭하면 펑, 고양이 모양 불꽃'], ['butterfly', '나비야', '꽃 언덕을 나는 나비 세 종류']],
+}, {
+  id: 'archer', name: '궁수게임', status: '개발 중',
+  blurb: '야외 사격장에서 바람을 읽고 활시위를 당기는 3D 1인칭 활쏘기 게임이에요.',
+  facts: [['플랫폼', 'PC·모바일 웹'], ['기술', 'Three.js'], ['사로 설정', '거리 5~100m · 라운드당 3·6·10발']],
 }];
 // newest first; date: shown big, time: small line under it
 const LOG = [
+  {"p":"archer","date":"11월 22일","title":"멘탈 감점 기준을 5점으로","tags":["밸런스"],"text":"5~8점은 멘탈 변화 없음. 4점 −2부터 한 점 내려갈 때마다 −2씩(3점 −4, 2점 −6, 1점 −8), 과녁 밖 −10","items":["9점 +5, 10점 +10, X +20은 그대로"]},
+  {"p":"archer","date":"11월 22일","title":"조준선 꺾임 수정 — 자연스러운 곡선","tags":["조준"],"text":"18~90m에서 조준선 한 점당 꺾이는 각도 최대 1.8°","fix":["손 위치에서 실제 궤적으로 합쳐지는 보정이 0.14초에서 갑자기 끝나, 조준선이 그 지점에서 확 꺾여 보였음. 화살과 붉은 궤적도 같은 보정을 씀","보정을 과녁 거리까지 부드럽게 줄이고(handBlend), 조준선 점을 90→140개로 늘려 보간. 조준선·화살·붉은 궤적이 같은 곡선을 따름. 명중 계산은 그대로"]},
+  {"p":"archer","date":"11월 22일","time":"20:05","title":"중력을 반영한 푸른 조준선","tags":["조준"],"text":"바람을 강하게 하니 너무 어려워져서, 조준선을 직선에서 예상 궤적으로 바꿨어요.","items":["조준선은 중력과 공기저항만 계산한 포물선. 바람은 빼고 보여 줘서, 바람만큼은 눈으로 읽어 보정","당기는 동안에는 현재 당긴 힘으로, 당기기 전에는 끝까지 당겼을 때 기준으로 그림. 끝점에 푸른 점","조준선과 붉은 궤적 모두 거리와 상관없이 화면에서 1.3~1.5픽셀 굵기로 고정"]},
+  {"p":"archer","date":"11월 22일","time":"19:35","title":"바람에 더 크게 꺾이는 화살","tags":["물리"],"text":"바람이 화살을 미는 힘을 두 배 가까이 올리고, 날아간 시간이 길수록 더 세게 밀리게 해서 뒤로 갈수록 궤적이 눈에 띄게 휘어져요.","items":["옆으로 밀리는 정도(힘 50): 18m·3m/s 7→14cm, 30m·3m/s 18→41cm, 50m·5m/s 85→207cm, 70m·5m/s 1.7→4.5m"]},
+  {"p":"archer","date":"11월 22일","time":"18:30","title":"멘탈 감소를 −2 단위로","tags":["밸런스"],"text":"7점 −2부터 한 점 내려갈 때마다 −2씩(6점 −4 … 1점 −14), 과녁 밖 −16"},
+  {"p":"archer","date":"11월 22일","time":"18:20","title":"멘탈 표 조정, 과녁 크기 옵션, 3D 구름","tags":["그래픽"],"text":"멘탈: X +20, 10점 +10, 9점 +5, 8점 0","items":["X 연속 2발 또는 멘탈 0에서 X면 멘탈 100","과녁 크기 60·80·100·120·140·160%, 최고 기록은 거리·화살 수·크기별로 따로","구름을 그림(스프라이트)에서 둥근 덩어리 여러 개를 모은 3D 뭉게구름으로, 바람에 따라 천천히 흘러감"]},
+  {"p":"archer","date":"11월 22일","time":"18:08","title":"바람 화살표가 거꾸로 가리키던 문제","tags":["물리"],"text":"","fix":["위쪽 3D 바람 화살표가 바람이 불어오는 쪽을 가리켜서, 화살이 표시와 반대로 밀리는 것처럼 보였음. 물리와 깃발은 원래 바람이 불어 가는 쪽이 맞았음","화살표 모델이 뒤집혀 만들어져 있었음. 바로잡아 화살표·깃발·화살이 모두 바람이 불어 가는 쪽으로 일치"]},
+  {"p":"archer","date":"11월 22일","time":"18:05","title":"바람 강화, 거리 직접 선택, 자동 발사 제거","tags":["사로설정"],"text":"바람이 화살에 거의 느껴지지 않는다는 피드백을 받고 물리를 다시 잡고, 레벨 대신 사로를 직접 고르는 방식으로 바꿨어요.","items":["거리: 10·18·30·50·70·90m 또는 5~100m 직접 조절 / 바람: 없음·약하게·보통·강하게·무작위 / 라운드당 화살 3·6·10발","라운드가 끝나면 평균 점수, X 개수, 거리별 최고 기록 표시","궤적을 레이저처럼 가는 선으로"],"fix":["바람이 공기저항에만 섞여 있어 30m·바람 3m/s에서 옆으로 약 5cm밖에 밀리지 않았음. 또 개발용 자동 발사 모드가 켜진 주소로 게임이 열려 있어 화살이 저절로 나감","바람이 화살을 직접 밀게 해 30m·3m/s에서 18cm 밀림. 자동 발사 코드는 게임에서 완전히 삭제"]},
+  {"p":"archer","date":"11월 22일","time":"17:55","title":"느린 비행, 푸른 조준선, 붉은 궤적","tags":["조준"],"text":"화살 비행을 절반 속도로 보여 줌. 날아가는 길과 명중 계산은 그대로라 난이도는 변함 없음","items":["화살 끝에서 조준점까지 이어지는 푸른 직선 조준선, 당길수록 진해짐","쏜 화살 뒤로 길게 남는 붉은 궤적, 맞은 뒤 3초에 걸쳐 사라짐. 망원경 화면에도 보임"]},
+  {"p":"archer","date":"11월 22일","time":"17:52","title":"시점을 오른쪽으로","tags":["조준"],"text":"손과 활이 화면 정중앙에 있어 답답해 보여서, 눈(카메라)을 오른쪽으로 7cm 옮긴 것처럼 손·활·화살 전체를 왼쪽으로 뺐어요. 화살은 약 20m에서 조준선과 만나도록 살짝 안쪽으로 향해서, 여전히 화면 가운데 조준점을 가리켜요."},
+  {"p":"archer","date":"11월 22일","time":"17:50","title":"시위를 당길 때 조준이 왼쪽으로 돌아 보이던 문제","tags":["조준"],"text":"","fix":["활을 왼쪽으로 옮긴 뒤, 화살 앞쪽은 활에 고정되고 끝만 오른손을 따라 가운데로 와서 화살이 왼쪽으로 틀어져 보였음. 마우스 고정 직후 튀는 이동값도 조준을 흔들 수 있었음","화살 받침 위치를 눈 바로 아래로 계산해 화살이 항상 화면 가운데 조준점을 향하게 하고, 마우스 고정 후 0.15초와 비정상적으로 큰 이동값은 무시"]},
+  {"p":"archer","date":"11월 22일","time":"17:45","title":"캐주얼 배경과 시위 당기는 오른손","tags":["그래픽"],"text":"모든 물체를 3단계 명암의 툰 재질로, 땅은 밝은 모래색과 연두색으로 단순화","items":["나무는 둥근 잎 덩어리와 원뿔 침엽수, 덤불도 둥글게, 구름은 동글동글한 만화 구름","활 손을 왼쪽으로 옮기고 활이 과녁을 가리지 않게 위쪽이 왼쪽으로 기울도록 바꿈","오른손 구가 화살 끝과 시위를 잡고, 당길수록 턱 아래 가운데로 오고, 놓으면 뒤로 빠졌다가 다시 시위로 돌아옴"]},
+  {"p":"archer","date":"11월 22일","time":"17:37","title":"활도 심플하게","tags":["그래픽"],"text":"동그란 손에 맞춰 가죽 손잡이와 감긴 띠를 빼고, 나뭇결 대신 단색 나무색 한 줄기로 위아래 날개가 주먹 안에서 이어지게 했어요."},
+  {"p":"archer","date":"11월 22일","time":"17:35","title":"손을 동그란 주먹으로","tags":["그래픽"],"text":"사실적인 손보다 캐주얼한 느낌이 게임에 더 어울려서, 활을 쥐는 손을 매끄러운 구 하나로 바꿨어요."},
+  {"p":"archer","date":"11월 22일","time":"17:30","title":"사람 손처럼 보이는 활 손","tags":["그래픽"],"text":"구와 도넛을 붙여 만든 손이 덩어리처럼 보여서, 마디와 관절 단위로 다시 만들었어요(이후 17:35에 동그란 손으로 다시 바꿈).","items":["손가락 네 개 모두 세 마디, 손톱, 손바닥·손등을 이은 몸통, 엄지는 과녁 쪽으로 나란히"],"fix":["내장 브라우저 패널이 가려지면 화면 캡처가 깨져 손 모양을 확인할 수 없었음","같은 치수를 파이썬 레이마칭으로 따로 그려 보며 손가락 간격·엄지 방향을 먼저 잡고, 게임 화면에서 다시 확인"]},
+  {"p":"archer","date":"11월 22일","time":"17:10","title":"그래픽 다듬기 (사실적 버전)","tags":["그래픽"],"text":"나무를 줄기·가지 + 잎 카드, 솔가지 카드 방식으로, 모두 인스턴스로 그려 그리기 호출을 크게 줄임","items":["풀과 잎이 정점 셰이더로 바람 방향과 세기에 맞춰 흔들림","해를 낮추고 따뜻한 빛 + 차가운 하늘빛, 그림자 해상도 4096, 거리에 따라 진해지는 안개","땅에 노멀맵과 자갈, 흰 사대선, 접지 그림자 / 먼 산 세 겹, 언덕 위 먼 숲, 음영이 진 구름","과녁을 네모난 짚 보스 + 핀 + 번호판으로"],"fix":["장면을 만드는 데 10초 넘게 회색 화면만 보임","땅 질감 텍스처를 1024에서 512로 줄여 4초 안쪽으로 단축, 준비 중 안내 문구 추가"]},
+  {"p":"archer","date":"11월 22일","time":"16:50","title":"3D 1인칭으로 전환","tags":["프로토타입"],"text":"게임의 기본 형태를 3D 1인칭 슈터로 정했어요. 사수는 제자리에 서 있고, 화면 아래에서 활과 팔이 올라오는 야외 사격장 구도로 처음부터 다시 만들었어요.","items":["하늘, 구름, 먼 산, 흙 사로, 나무, 울타리, 통과 호박, 122cm 과녁까지 모두 코드로 만든 텍스처","바람은 위쪽 3D 화살표, 색이 회색(무풍)→파랑→초록→노랑→빨강으로 부드럽게 바뀜. 깃발과 먼지도 바람에 날림","스탯: 힘(당기는 시간, 버티는 시간, 화살 속도, 바람 영향, 공격력), 집중력(조준 안정 시간, 발사 오차)","멘탈: 빗나가거나 낮은 점수면 떨어지고 높은 점수면 회복, 낮으면 힘·집중력이 최대 45%까지 줄어듦","화살 종류마다 속도, 바람 영향, 공기저항, 공격력을 따로 둘 수 있는 구조","30m 이상에서는 오른쪽 아래 망원경 화면"],"fix":["망원경 화면에서 과녁에 박힌 화살이 보이지 않음","카메라가 과녁 정면에서 보고 있어 화살이 점으로만 보였음. 비스듬한 위치로 옮기고 깃을 키움"]},
+  {"p":"archer","date":"11월 22일","time":"16:05","title":"궁수게임 시작: 기본 활쏘기 (2D)","tags":["프로토타입"],"text":"이야기와 보스전을 붙이기 전에 활을 당기고 쏘는 감각부터 만들었어요. 옆에서 보는 새벽 들판에 궁수와 122cm 과녁을 세우고, 화면을 눌러 뒤로 끌었다 놓으면 화살이 나가요. (prototype_2d/)","items":["중력과 공기저항, 화살마다 바뀌는 맞바람·뒷바람","2.5초 넘게 당기면 손이 떨림","18m 수련장부터 90m 성벽까지 5단계","먼 산 위의 성과 하늘을 지나가는 작은 용 그림자로 앞으로 올 이야기를 살짝 보여 줌"]},
   { p: 'nyang', date: '11월 22일', time: '00:10', title: '광고는 홈 배너 하나만, 업로드 준비', tags: ['출시', 'Android'],
     text: '전면 광고를 빼고 홈 화면 배너만 남기기로 했어요. 고양이와 노는 흐름을 끊지 않는 쪽이 더 중요하다고 봤어요. Play 개발자 계정을 만들고, 이 사이트에 개인정보처리방침 페이지도 올렸어요.',
     items: ['Android Studio에서 바로 실행하는 디버그 빌드는 항상 테스트 광고, 업로드용 릴리스 빌드에만 실제 광고 ID', '실제 광고 ID 없이 릴리스 빌드를 하면 빌드가 멈추도록 막아 둠', '업로드 키(서명) 설정 자리를 만들고 키 파일은 저장소에 올라가지 않게 제외'] },
@@ -370,36 +398,57 @@ const TODO = [
 // ---- rendering ----
 const thumbs = document.getElementById('thumbs').content, thumb = id => { const n = thumbs.querySelector(`[data-toy="${id}"]`); return n ? n.innerHTML : ''; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-document.getElementById('projList').innerHTML = PROJECTS.map(p => `
-  <article class="proj">
+function drawProject(p) {
+  document.getElementById('projList').innerHTML = `
+  <article class="proj ${p.toys ? '' : 'solo'}">
     <div>
       <h3>${esc(p.name)}</h3><span class="st2">${esc(p.status)}</span>
       <p style="margin:0 0 14px">${esc(p.blurb)}</p>
       <table class="facts"><tbody>${p.facts.map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`).join('')}</tbody></table>
     </div>
-    <div class="strip">${p.toys.map(([id, n, d]) => `<div class="toy">${thumb(id)}<b>${esc(n)}</b><span>${esc(d)}</span></div>`).join('')}</div>
-  </article>`).join('');
-const allTags = ['전체', ...new Set(LOG.flatMap(e => e.tags))];
+    ${p.toys ? `<div class="strip">${p.toys.map(([id, n, d]) => `<div class="toy">${thumb(id)}<b>${esc(n)}</b><span>${esc(d)}</span></div>`).join('')}</div>` : ''}
+  </article>`;
+}
+let projectRows = [];
 let tag = '전체';
 const chips = document.getElementById('chips');
-function drawChips() { chips.innerHTML = allTags.map(t => `<button type="button" aria-pressed="${t === tag}" data-t="${esc(t)}">${esc(t)} <small>${t === '전체' ? LOG.length : LOG.filter(e => e.tags.includes(t)).length}</small></button>`).join(''); }
+function drawChips() {
+  const allTags = ['전체', ...new Set(projectRows.flatMap(e => e.tags))];
+  chips.innerHTML = allTags.map(t => `<button type="button" aria-pressed="${t === tag}" data-t="${esc(t)}">${esc(t)} <small>${t === '전체' ? projectRows.length : projectRows.filter(e => e.tags.includes(t)).length}</small></button>`).join(''); }
 function drawLog() {
-  const rows = LOG.filter(e => tag === '전체' || e.tags.includes(tag));
+  const rows = projectRows.filter(e => tag === '전체' || e.tags.includes(tag));
   document.getElementById('logList').innerHTML = rows.length ? rows.map(e => `
     <li class="ent">
       <div class="d">${esc(e.date)}${e.time ? `<small>${esc(e.time)}</small>` : ''}</div>
       <div>
         <h3>${esc(e.title)}</h3>
-        <p>${esc(e.text)}</p>
+        ${e.text ? `<p>${esc(e.text)}</p>` : ''}
         ${e.items ? `<ul>${e.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>` : ''}
         ${e.fix ? `<div class="fix"><b>문제</b> ${esc(e.fix[0])}<br><b>해결</b> ${esc(e.fix[1])}</div>` : ''}
-        <div class="tags">${PROJECTS.length > 1 ? `<span>${esc(PROJECTS.find(p => p.id === e.p).name)}</span>` : ''}${e.tags.map(t => `<span>${esc(t)}</span>`).join('')}</div>
+        <div class="tags">${e.tags.map(t => `<span>${esc(t)}</span>`).join('')}</div>
       </div>
     </li>`).join('') : '<li class="empty">이 태그의 기록이 아직 없어요.</li>';
 }
 chips.addEventListener('click', ev => { const b = ev.target.closest('button'); if (!b) return; tag = b.dataset.t; drawChips(); drawLog(); });
 document.getElementById('todo').innerHTML = TODO.map(([ok, t]) => `<li class="${ok ? 'ok' : ''}"><i aria-hidden="true">${ok ? '✓' : ''}</i><span>${ok ? '<span class="sr">완료: </span>' : ''}${esc(t)}</span></li>`).join('');
-drawChips(); drawLog();
+function selectProject(project) {
+  projectRows = LOG.filter(entry => entry.p === project.id);
+  tag = '전체';
+  drawProject(project);
+  for (const link of document.querySelectorAll('.project-menu a')) {
+    if (link.id === project.id) link.setAttribute('aria-current', 'true');
+    else link.removeAttribute('aria-current');
+  }
+  document.getElementById('logTitle').textContent = project.name + ' 개발 로그';
+  drawChips();
+  drawLog();
+}
+function projectFromHash() { return PROJECTS.find(project => '#' + project.id === location.hash); }
+selectProject(projectFromHash() || PROJECTS[0]);
+window.addEventListener('hashchange', () => {
+  const project = projectFromHash();
+  if (project) selectProject(project);
+});
 }
 </script>
 </body>
